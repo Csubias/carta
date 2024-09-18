@@ -1,4 +1,3 @@
-//Holaaaaaaaaaaaa prueba(:
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "../contexts/CartContext";
@@ -19,7 +18,11 @@ const products = {
     { name: "Napolitano Philadelphia", price: 25, category: "flan" },
     { name: "Elote", price: 25, category: "flan" },
   ],
-  charola: [{ name: "Chocolate" }, { name: "Turín" }, { name: "Hersheys" }],
+  charola: [
+    { name: "Chocolate", price: 40 },
+    { name: "Turín", price: 40 },
+    { name: "Hersheys", price: 40 },
+  ],
   vaso: [
     { name: "Vaso de Gelatina", price: 60 },
     { name: "Vaso de Pay", price: 70 },
@@ -33,27 +36,21 @@ function ProductSelection() {
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedProducts, setSelectedProducts] = useState([]);
-  const [showAcceptButton, setShowAcceptButton] = useState(false);
 
   const handleSelectProduct = (product) => {
     if (type === "charola") {
-      if (selectedProducts.includes(product)) {
+      const isSelected = selectedProducts.includes(product);
+      if (isSelected) {
+        // Deseleccionar el producto
         setSelectedProducts((prev) => prev.filter((p) => p !== product));
       } else if (selectedProducts.length < 3) {
+        // Seleccionar el producto
         setSelectedProducts((prev) => [...prev, product]);
-        if (selectedProducts.length === 2) {
-          setShowAcceptButton(true);
-        }
       }
     } else {
       setSelectedProduct(product);
       setShowModal(true);
     }
-  };
-
-  const handleAcceptSelection = () => {
-    setShowModal(true);
-    setShowAcceptButton(false);
   };
 
   const handleAddToCart = (toppings) => {
@@ -75,12 +72,16 @@ function ProductSelection() {
     navigate("/cart");
   };
 
+  const handleAcceptCharola = () => {
+    setShowModal(true);
+  };
+
   return (
     <div className="product-selection">
       <h2>
-        {type === "rebanada" && "Selecciona tu rebanadaaaa"}
-        {type === "charola" && "Selecciona 3 de nuestros ricos postreeeees"}
-        {type === "vaso" && "Escoge un vaso de tu postre favorieeeeto"}
+        {type === "rebanada" && "Selecciona tu rebanada"}
+        {type === "charola" && "Selecciona 3 de nuestros ricos postres"}
+        {type === "vaso" && "Escoge un vaso de tu postre favorito"}
       </h2>
 
       {/* Para rebanada, muestra las categorías y productos como tarjetas */}
@@ -113,13 +114,15 @@ function ProductSelection() {
             <button
               key={product.name}
               onClick={() => handleSelectProduct(product)}
-              disabled={selectedProducts.includes(product)}
+              style={{
+                opacity: selectedProducts.includes(product) ? 0.5 : 1,
+              }}
             >
               {product.name}
             </button>
           ))}
-          {showAcceptButton && (
-            <button onClick={handleAcceptSelection}>Aceptar</button>
+          {selectedProducts.length === 3 && (
+            <button onClick={handleAcceptCharola}>Aceptar</button>
           )}
         </div>
       )}
