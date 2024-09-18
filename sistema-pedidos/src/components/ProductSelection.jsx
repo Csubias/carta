@@ -1,3 +1,4 @@
+//Holaaaaaaaaaaaa prueba(:
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "../contexts/CartContext";
@@ -77,9 +78,9 @@ function ProductSelection() {
   return (
     <div className="product-selection">
       <h2>
-        {type === "rebanada" && "Selecciona tu rebanada"}
-        {type === "charola" && "Selecciona 3 de nuestros ricos postres"}
-        {type === "vaso" && "Escoge un vaso de tu postre favorito"}
+        {type === "rebanada" && "Selecciona tu rebanadaaaa"}
+        {type === "charola" && "Selecciona 3 de nuestros ricos postreeeees"}
+        {type === "vaso" && "Escoge un vaso de tu postre favorieeeeto"}
       </h2>
 
       {/* Para rebanada, muestra las categorías y productos como tarjetas */}
