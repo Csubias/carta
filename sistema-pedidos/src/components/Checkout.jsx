@@ -13,7 +13,7 @@ function Checkout() {
     const code = Math.floor(1000 + Math.random() * 9000);
     setOrderCodeState(code);
     setOrderCode(code); // Set order code in global state
-    await completeOrder({ code, items: cart, total: getTotal() }); // Guarda el pedido en Firebase
+    await completeOrder({ code, items: cart, total: getTotal() }); // Guarda el pedido en localStorage
     setShowModal(true);
   };
 
