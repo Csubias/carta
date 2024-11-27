@@ -1,32 +1,91 @@
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState(() => {
+    const savedCart = localStorage.getItem("cart");
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+  const [orderCode, setOrderCode] = useState(null);
+
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
 
   const addToCart = (item) => {
-    if (item.type === "charola") {
-      item.price = 45; // Precio fijo para charola
-    }
-    setCart((prevCart) => [...prevCart, item]);
+    setCart((prevCart) => {
+      const existingItemIndex = prevCart.findIndex(
+        (cartItem) => cartItem.name === item.name && cartItem.type === item.type
+      );
+      if (existingItemIndex !== -1) {
+        const updatedCart = [...prevCart];
+        updatedCart[existingItemIndex].quantity += 1;
+        return updatedCart;
+      }
+      return [...prevCart, { ...item, quantity: 1 }];
+    });
   };
 
   const removeFromCart = (index) => {
-    setCart((prevCart) => prevCart.filter((_, i) => i !== index));
+    setCart((prevCart) => {
+      const updatedCart = [...prevCart];
+      if (updatedCart[index].quantity > 1) {
+        updatedCart[index].quantity -= 1;
+      } else {
+        updatedCart.splice(index, 1);
+      }
+      return updatedCart;
+    });
   };
 
   const getTotal = () => {
-    return cart.reduce((total, item) => total + (item.price || 0), 0);
+    return cart.reduce((total, item) => {
+      if (item.type === "charola") {
+        return total + 45; // Precio fijo de la charola
+      }
+      return total + (item.price || 0);
+    }, 0);
   };
 
   const clearCart = () => {
     setCart([]);
   };
 
+  const completeOrder = (order) => {
+    const orders = JSON.parse(localStorage.getItem("orders")) || [];
+    const newOrder = { code: Date.now().toString(), ...order }; // Asegúrate de usar 'code'
+    orders.push(newOrder);
+    localStorage.setItem("orders", JSON.stringify(orders));
+    console.log("Order saved with code: ", newOrder.code);
+    return newOrder;
+  };
+
+  const getOrder = (code) => {
+    const orders = JSON.parse(localStorage.getItem("orders")) || [];
+    console.log("Orders in localStorage:", orders); // Mensaje de depuración
+    const order = orders.find((order) => order.code === code.toString()); // Asegúrate de que estás buscando por 'code' como cadena
+    if (order) {
+      return order;
+    } else {
+      console.log("No such document!");
+      return null;
+    }
+  };
+
   return (
     <CartContext.Provider
-      value={{ cart, addToCart, removeFromCart, getTotal, clearCart }}
+      value={{
+        cart,
+        addToCart,
+        removeFromCart,
+        getTotal,
+        clearCart,
+        orderCode,
+        setOrderCode,
+        completeOrder,
+        getOrder,
+      }}
     >
       {children}
     </CartContext.Provider>

@@ -18,7 +18,11 @@ const SliceCard = ({ name, description, price, onClick }) => {
         padding: "10px",
         borderRadius: "5px",
         margin: "10px",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        transition: "transform 0.2s",
       }}
+      onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
+      onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
     >
       <h3>{name}</h3>
       <p>{description}</p>

@@ -2,6 +2,7 @@
 //Pantalla de inicio con el logo y botón para armar pedido.
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import "./Home.css"; // Importa el archivo CSS
 
 function Home() {
   const navigate = useNavigate();

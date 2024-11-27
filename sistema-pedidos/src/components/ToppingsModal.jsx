@@ -43,9 +43,9 @@ function ToppingsModal({ product, onClose, onAddToCart }) {
   };
 
   return (
-    <div className="modal">
+    <div className="modal" role="dialog" aria-labelledby="modal-title">
       <div className="modal-content">
-        <h3>
+        <h3 id="modal-title">
           {product.type === "charola"
             ? "Elige tus toppings para tu charola:"
             : `Elige tus toppings para ${product.name}`}

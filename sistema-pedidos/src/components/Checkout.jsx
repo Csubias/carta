@@ -1,15 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import { useCart } from "../contexts/CartContext";
 import { useNavigate } from "react-router-dom";
+import Modal from "./Modal"; // Importa el componente Modal
 
 function Checkout() {
-  const { cart, getTotal, clearCart } = useCart();
+  const { cart, getTotal, clearCart, setOrderCode, completeOrder } = useCart(); // Importa completeOrder
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+  const [orderCode, setOrderCodeState] = useState(null);
 
-  const handleCompleteOrder = () => {
-    const orderCode = Math.floor(1000 + Math.random() * 9000);
-    alert(`¡Pedido completado! Código de pedido: ${orderCode}`);
+  const handleCompleteOrder = async () => {
+    const code = Math.floor(1000 + Math.random() * 9000);
+    setOrderCodeState(code);
+    setOrderCode(code); // Set order code in global state
+    await completeOrder({ code, items: cart, total: getTotal() }); // Guarda el pedido en Firebase
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
     clearCart();
+    setShowModal(false);
     navigate("/"); // Redirige a la página de inicio
   };
 
@@ -68,6 +78,14 @@ function Checkout() {
           </div>
           <button onClick={handleBackToMenu}>Volver al Menú</button>
         </div>
+      )}
+      {showModal && (
+        <Modal>
+          <h2>Este es tu número de orden: {orderCode}</h2>
+          <p>Tómale foto a tu número de orden o memorizala.</p>
+          <p>¡Gracias por tu pedido! ^^</p>
+          <button onClick={handleCloseModal}>¡Listo!</button>
+        </Modal>
       )}
     </div>
   );
