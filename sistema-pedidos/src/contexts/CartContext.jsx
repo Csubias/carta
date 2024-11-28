@@ -23,7 +23,16 @@ export const CartProvider = ({ children }) => {
         updatedCart[existingItemIndex].quantity += 1;
         return updatedCart;
       }
-      return [...prevCart, { ...item, quantity: 1 }];
+      return [
+        ...prevCart,
+        {
+          ...item,
+          quantity: 1,
+          category: item.category || null,
+          toppings: item.toppings || [],
+          // Añadir otros atributos del producto aquí si es necesario
+        },
+      ];
     });
   };
 
@@ -53,8 +62,10 @@ export const CartProvider = ({ children }) => {
   };
 
   const completeOrder = (order) => {
+    const generateCode = () =>
+      Math.floor(100000 + Math.random() * 900000).toString(); // Genera un código de 6 dígitos
+    const newOrder = { code: generateCode(), ...order };
     const orders = JSON.parse(localStorage.getItem("orders")) || [];
-    const newOrder = { code: Date.now().toString(), ...order }; // Asegúrate de usar 'code'
     orders.push(newOrder);
     localStorage.setItem("orders", JSON.stringify(orders));
     console.log("Order saved with code: ", newOrder.code);
@@ -68,7 +79,7 @@ export const CartProvider = ({ children }) => {
     if (order) {
       return order;
     } else {
-      console.log("No such document!");
+      console.log("No se encontró el pedido!");
       return null;
     }
   };
