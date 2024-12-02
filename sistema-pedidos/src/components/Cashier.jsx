@@ -28,22 +28,34 @@ function Cashier() {
     }
   };
 
+  const handleCloseModal = () => {
+    // Restablecer los estados al cerrar el modal
+    setOrderCode("");
+    setOrderDetails(null);
+    setPaymentAmount("");
+    setChange(null);
+    setShowModal(false);
+  };
+
   return (
     <div className="cashier">
-      <h2>Ingrese el código de la orden</h2>
-      <input
-        type="text"
-        value={orderCode}
-        onChange={(e) => setOrderCode(e.target.value)}
-        placeholder="Código de orden"
-      />
-      <button onClick={handleSearchOrder}>Buscar Orden</button>
-      {orderDetails && (
+      {!orderDetails ? (
+        <>
+          <h2>Ingrese el código de la orden</h2>
+          <input
+            type="text"
+            value={orderCode}
+            onChange={(e) => setOrderCode(e.target.value)}
+            placeholder="Código de orden"
+          />
+          <button onClick={handleSearchOrder}>Buscar Orden</button>
+        </>
+      ) : (
         <div>
           <h3>Resumen de la Orden</h3>
           {orderDetails.items.map((item, index) => (
             <div key={index}>
-              {item.name} - ${item.price}
+              {item.name} - ${item.price || "45.00"}
               {item.category && ` (${item.category})`}
               {item.toppings && ` - Toppings: (${item.toppings.join(", ")})`}
               {item.type === "charola" && (
@@ -71,7 +83,7 @@ function Cashier() {
       {showModal && (
         <Modal>
           <h2>Cambio: ${change.toFixed(2)}</h2>
-          <button onClick={() => setShowModal(false)}>Cerrar</button>
+          <button onClick={handleCloseModal}>Cerrar</button>
         </Modal>
       )}
     </div>
