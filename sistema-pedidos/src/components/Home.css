@@ -4,7 +4,10 @@ body {
   padding: 0;
   height: 100%;
   width: 100%;
-  background-color: #ffd1dc72; /* Color rosa pastel */
+  background-color: #dd5474e5; /* Color rosa pastel */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #root {
@@ -26,8 +29,9 @@ body {
   margin-bottom: 20px;
 }
 
-button {
-  background-color: #ff69b4; /* Color rosa */
+/* Elimina los estilos del botón para evitar conflictos */
+/* button {
+  background-color: #edebf6d3; 
   color: white;
   border: none;
   padding: 10px 20px;
@@ -37,5 +41,5 @@ button {
 }
 
 button:hover {
-  background-color: #ff1493; /* Color rosa oscuro */
-}
+  background-color: #970ab3; 
+} */

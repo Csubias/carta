@@ -9,7 +9,7 @@ function ToppingsModal({ product, onClose, onAddToCart }) {
     Rompopes: ["Vainilla", "Piñon", "Capuchino"],
     Chispas: [
       "Chocolate",
-      "Capuchino",
+      "Capucchino",
       "Tres Chocolates",
       "Arcoiris",
       "Unicornio",

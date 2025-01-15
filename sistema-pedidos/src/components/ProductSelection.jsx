@@ -2,32 +2,8 @@ import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "../contexts/CartContext";
 import ToppingsModal from "./ToppingsModal";
-5;
-const products = {
-  rebanada: [
-    { name: "Gansito", price: 30, category: "gelatina" },
-    { name: "Galleta Oreo", price: 30, category: "gelatina" },
-    { name: "Chocolate Abuelita", price: 30, category: "gelatina" },
-    { name: "Chocolate", price: 40, category: "pastel" },
-    { name: "Turín", price: 40, category: "pastel" },
-    { name: "Hersheys", price: 40, category: "pastel" },
-    { name: "Chocolate", price: 35, category: "pay" },
-    { name: "Limón", price: 35, category: "pay" },
-    { name: "Vainilla", price: 25, category: "flan" },
-    { name: "Napolitano Sencillo", price: 25, category: "flan" },
-    { name: "Napolitano Philadelphia", price: 25, category: "flan" },
-    { name: "Elote", price: 25, category: "flan" },
-  ],
-  charola: [
-    { name: "Chocolate", price: 40 },
-    { name: "Turín", price: 40 },
-    { name: "Hersheys", price: 40 },
-  ],
-  vaso: [
-    { name: "Vaso de Gelatina", price: 60 },
-    { name: "Vaso de Pay", price: 70 },
-  ],
-};
+import products from "../data/products"; // Importa los productos
+import "/Users/chris/Desktop/sistema de pedidos/sistema-pedidos/src/styles/ProductSelection.css"; // Asegúrate de que esta ruta sea correcta
 
 function ProductSelection() {
   const { type } = useParams();
@@ -41,10 +17,8 @@ function ProductSelection() {
     if (type === "charola") {
       const isSelected = selectedProducts.includes(product);
       if (isSelected) {
-        // Deseleccionar el producto
         setSelectedProducts((prev) => prev.filter((p) => p !== product));
       } else if (selectedProducts.length < 3) {
-        // Seleccionar el producto
         setSelectedProducts((prev) => [...prev, product]);
       }
     } else {
@@ -57,7 +31,6 @@ function ProductSelection() {
     const productWithToppings = {
       ...selectedProduct,
       toppings,
-      category: selectedProduct.category,
     };
     addToCart(productWithToppings);
     setSelectedProduct(null);
@@ -76,6 +49,38 @@ function ProductSelection() {
     setShowModal(true);
   };
 
+  const renderProducts = (productsList) => {
+    return (
+      <div className="product-grid">
+        {productsList.map((product) => (
+          <div className="product-card" key={product.name}>
+            <img
+              src={product.image || "https://via.placeholder.com/300"}
+              alt={product.name}
+              className="product-image"
+            />
+            <div className="product-info">
+              <h4 className="product-title">
+                {product.name} <span className="product-price">${product.price}</span>
+              </h4>
+              <p className="product-description">
+                {product.description || "Un delicioso postre para disfrutar."}
+              </p>
+              <button
+                onClick={() => handleSelectProduct(product)}
+                className={`select-button ${
+                  selectedProducts.includes(product) ? "selected" : ""
+                }`}
+              >
+                {selectedProducts.includes(product) ? "Seleccionado" : "Seleccionar"}
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div className="product-selection">
       <h2>
@@ -84,76 +89,36 @@ function ProductSelection() {
         {type === "vaso" && "Escoge un vaso de tu postre favorito"}
       </h2>
 
-      {/* Para rebanada, muestra las categorías y productos como tarjetas */}
-      {type === "rebanada" && (
-        <div>
-          {["gelatina", "pastel", "pay", "flan"].map((category) => (
-            <div key={category}>
-              <h3>{category.charAt(0).toUpperCase() + category.slice(1)}</h3>
-              <div className="product-grid">
-                {products.rebanada
-                  .filter((product) => product.category === category)
-                  .map((product) => (
-                    <button
-                      key={product.name}
-                      onClick={() => handleSelectProduct(product)}
-                    >
-                      {product.name} - ${product.price}
-                    </button>
-                  ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+      {type === "rebanada" &&
+        ["gelatina", "pastel", "pay", "flan"].map((category) => (
+          <div key={category}>
+            <h3>{category.charAt(0).toUpperCase() + category.slice(1)}</h3>
+            {renderProducts(
+              products.rebanada.filter((product) => product.category === category)
+            )}
+          </div>
+        ))}
 
-      {/* Selección de charola, selecciona 3 productos */}
       {type === "charola" && (
-        <div>
-          {products[type]?.map((product) => (
-            <button
-              key={product.name}
-              onClick={() => handleSelectProduct(product)}
-              style={{
-                opacity: selectedProducts.includes(product) ? 0.5 : 1,
-              }}
-            >
-              {product.name}
-            </button>
-          ))}
+        <>
+          {renderProducts(products.charola)}
           {selectedProducts.length === 3 && (
-            <button onClick={handleAcceptCharola}>Aceptar</button>
-          )}
-        </div>
-      )}
-
-      {/* Modal de toppings */}
-      {showModal && type === "charola" && (
-        <ToppingsModal
-          product={{ name: "Charola", price: 45 }}
-          onClose={() => setShowModal(false)}
-          onAddToCart={(toppings) => handleAddCharolaToCart(toppings)}
-        />
-      )}
-
-      {type === "vaso" && (
-        <div>
-          {products[type]?.map((product) => (
-            <button
-              key={product.name}
-              onClick={() => handleSelectProduct(product)}
-            >
-              {product.name} - ${product.price}
+            <button className="accept-button" onClick={handleAcceptCharola}>
+              Aceptar
             </button>
-          ))}
-        </div>
+          )}
+        </>
       )}
 
-      {showModal && type !== "charola" && (
+      {type === "vaso" && renderProducts(products.vaso)}
+
+      {showModal && (
         <ToppingsModal
-          product={selectedProduct}
+          product={type === "charola" ? { name: "Charola", price: 45 } : selectedProduct}
           onClose={() => setShowModal(false)}
-          onAddToCart={(toppings) => handleAddToCart(toppings)}
+          onAddToCart={
+            type === "charola" ? handleAddCharolaToCart : handleAddToCart
+          }
         />
       )}
     </div>
