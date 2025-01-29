@@ -21,6 +21,12 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background-color: #fff;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer; /* Añadimos el cursor pointer */
+}
+
+.product-card.selected {
+  border-color: #4CAF50; /* Color de borde para la carta seleccionada */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
 .product-card:hover {

@@ -53,7 +53,13 @@ function ProductSelection() {
     return (
       <div className="product-grid">
         {productsList.map((product) => (
-          <div className="product-card" key={product.name}>
+          <div
+            className={`product-card ${
+              selectedProducts.includes(product) ? "selected" : ""
+            }`}
+            key={product.name}
+            onClick={() => handleSelectProduct(product)}
+          >
             <img
               src={product.image || "https://via.placeholder.com/300"}
               alt={product.name}
@@ -61,19 +67,12 @@ function ProductSelection() {
             />
             <div className="product-info">
               <h4 className="product-title">
-                {product.name} <span className="product-price">${product.price}</span>
+                {product.name}{" "}
+                <span className="product-price">${product.price}</span>
               </h4>
               <p className="product-description">
                 {product.description || "Un delicioso postre para disfrutar."}
               </p>
-              <button
-                onClick={() => handleSelectProduct(product)}
-                className={`select-button ${
-                  selectedProducts.includes(product) ? "selected" : ""
-                }`}
-              >
-                {selectedProducts.includes(product) ? "Seleccionado" : "Seleccionar"}
-              </button>
             </div>
           </div>
         ))}
@@ -94,7 +93,9 @@ function ProductSelection() {
           <div key={category}>
             <h3>{category.charAt(0).toUpperCase() + category.slice(1)}</h3>
             {renderProducts(
-              products.rebanada.filter((product) => product.category === category)
+              products.rebanada.filter(
+                (product) => product.category === category
+              )
             )}
           </div>
         ))}
@@ -114,7 +115,11 @@ function ProductSelection() {
 
       {showModal && (
         <ToppingsModal
-          product={type === "charola" ? { name: "Charola", price: 45 } : selectedProduct}
+          product={
+            type === "charola"
+              ? { name: "Charola", price: 45 }
+              : selectedProduct
+          }
           onClose={() => setShowModal(false)}
           onAddToCart={
             type === "charola" ? handleAddCharolaToCart : handleAddToCart
